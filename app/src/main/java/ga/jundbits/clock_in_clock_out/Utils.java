@@ -1,20 +1,14 @@
 package ga.jundbits.clock_in_clock_out;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -22,55 +16,21 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
 
 public class Utils {
 
-    public interface CameraPermissionCallback {
-        void onPermissionGranted();
-
-        void onPermissionDenied();
-
-        void onPermissionRationaleShouldBeShown(PermissionToken permissionToken);
-    }
-
-    public static void checkCameraPermission(Context context, CameraPermissionCallback callback) {
-
-        Dexter.withContext(context)
-                .withPermissions(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport multiplePermissionsReport) {
-
-                        if (multiplePermissionsReport.areAllPermissionsGranted())
-                            callback.onPermissionGranted();
-
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-                        callback.onPermissionRationaleShouldBeShown(permissionToken);
-                    }
-                })
-                .onSameThread()
-                .check();
-
-    }
-
     public static Bitmap generateCode(Activity activity, String code) {
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width = displayMetrics.widthPixels;
-        // int height = displayMetrics.heightPixels;
 
         QRGEncoder qrgEncoder = new QRGEncoder(code, null, QRGContents.Type.TEXT, width);
+        qrgEncoder.setColorWhite(Color.BLACK);
+        qrgEncoder.setColorBlack(Color.WHITE);
         return qrgEncoder.getBitmap();
 
     }

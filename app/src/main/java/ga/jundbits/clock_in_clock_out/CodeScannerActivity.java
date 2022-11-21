@@ -1,12 +1,12 @@
 package ga.jundbits.clock_in_clock_out;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
@@ -15,7 +15,6 @@ import com.google.zxing.Result;
 
 public class CodeScannerActivity extends AppCompatActivity {
 
-    private CodeScannerView codeScannerView;
     private CodeScanner codeScanner;
 
     @Override
@@ -23,8 +22,10 @@ public class CodeScannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_barcode_scanner);
 
-        codeScannerView =findViewById(R.id.code_scanner_view);
-        codeScanner=new CodeScanner(this,codeScannerView);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        CodeScannerView codeScannerView = findViewById(R.id.code_scanner_view);
+        codeScanner = new CodeScanner(this, codeScannerView);
 
         codeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
@@ -34,15 +35,16 @@ public class CodeScannerActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-                       String resultText=result.getText();
-                       Utils.writeToFile(getApplicationContext(), resultText);
+                        String resultText = result.getText();
+                        Toast.makeText(CodeScannerActivity.this, resultText, Toast.LENGTH_SHORT).show();
+                        Utils.writeToFile(getApplicationContext(), resultText);
 
-                       new Handler().postDelayed(new Runnable() {
-                           @Override
-                           public void run() {
-                               codeScanner.startPreview();
-                           }
-                       },1000);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                codeScanner.startPreview();
+                            }
+                        }, 1000);
 
                     }
                 });
@@ -64,4 +66,12 @@ public class CodeScannerActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
+    }
 }
