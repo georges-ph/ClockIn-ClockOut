@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">Clock-In Clock-Out</string>
-    <string name="app_name_no_spaces">ClockInClockOut</string>
+    <string name="app_name">ClockIn-ClockOut</string>
 </resources>

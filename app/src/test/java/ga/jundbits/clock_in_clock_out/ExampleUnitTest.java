@@ -1,4 +1,4 @@
-package ga.jayp.clockin_clockout;
+package ga.jundbits.clock_in_clock_out;
 
 import org.junit.Test;
 
