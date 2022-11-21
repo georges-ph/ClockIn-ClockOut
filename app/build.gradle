@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'ga.jundbits.clock_in_clock_out'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "ga.jundbits.clock_in_clock_out"
         minSdk 21
-        targetSdk 32
-        versionCode 1
-        versionName "1.0"
+        targetSdk 33
+        versionCode 2
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
