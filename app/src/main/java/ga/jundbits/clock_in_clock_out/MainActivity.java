@@ -26,11 +26,10 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     private EditText mainEditText;
-    private Button mainStartButton;
+    private Button mainInButton, mainOutButton;
     private ImageView mainImageView;
     private int currentUserID;
-    private final int SCANNER_CODE = 100100;
-    private boolean shouldShowInput = false;
+    private Clocking clocking;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         initVars();
         if (currentUserID != 0)
-            showCode();
+            showInput();
         setOnClicks();
 
     }
@@ -47,7 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private void initVars() {
 
         mainEditText = findViewById(R.id.main_edit_text);
-        mainStartButton = findViewById(R.id.main_start_button);
+        mainInButton = findViewById(R.id.main_in_button);
+        mainOutButton = findViewById(R.id.main_out_button);
         mainImageView = findViewById(R.id.main_image_view);
 
         currentUserID = Utils.readUserID(this);
@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private void showCode() {
 
         mainEditText.setVisibility(View.GONE);
-        mainStartButton.setVisibility(View.GONE);
+        mainInButton.setVisibility(View.GONE);
+        mainOutButton.setVisibility(View.GONE);
         mainImageView.setVisibility(View.VISIBLE);
 
         generateCode();
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         Date date = Calendar.getInstance().getTime();
         SimpleDateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
 
-        String code = currentUserID + "," + formatter.format(date);
+        String code = currentUserID + "," + formatter.format(date) + "," + clocking.name();
 
         Bitmap bitmap = Utils.generateCode(MainActivity.this, code);
         mainImageView.setImageBitmap(bitmap);
@@ -91,74 +92,58 @@ public class MainActivity extends AppCompatActivity {
     private void showInput() {
 
         mainEditText.setVisibility(View.VISIBLE);
-        mainStartButton.setVisibility(View.VISIBLE);
+        mainInButton.setVisibility(View.VISIBLE);
+        mainInButton.setVisibility(View.VISIBLE);
         mainImageView.setVisibility(View.GONE);
+
+        mainEditText.setText(String.valueOf(currentUserID));
 
     }
 
     private void setOnClicks() {
 
-        mainStartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        mainInButton.setOnClickListener(view -> {
+            clocking = Clocking.IN;
+            buttonsLogic();
+        });
 
-                Utils.closeKeyboard(MainActivity.this);
+        mainOutButton.setOnClickListener(view -> {
+            clocking = Clocking.OUT;
+            buttonsLogic();
+        });
 
-                String editText = mainEditText.getText().toString();
+    }
 
-                if (TextUtils.isEmpty(editText))
-                    Toast.makeText(MainActivity.this, "Enter an ID", Toast.LENGTH_SHORT).show();
-                else {
+    private void buttonsLogic() {
 
-                    currentUserID = Integer.parseInt(editText);
+        Utils.closeKeyboard(MainActivity.this);
 
-                    if (currentUserID == SCANNER_CODE) {
+        String editText = mainEditText.getText().toString();
 
-                        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-                                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                            scanCode();
-                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            requestPermissionLauncher.launch(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE});
-                        }
+        if (TextUtils.isEmpty(editText)) {
+            Toast.makeText(MainActivity.this, "Enter an ID", Toast.LENGTH_SHORT).show();
+        } else {
 
-                    } else if (currentUserID != 0) {
+            currentUserID = Integer.parseInt(editText);
 
-                        Utils.saveUserID(MainActivity.this, currentUserID);
-                        showCode();
+            int SCANNER_CODE = 100100;
+            if (currentUserID == SCANNER_CODE) {
 
-                    }
-
+                if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    scanCode();
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissionLauncher.launch(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE});
                 }
 
-            }
-        });
+            } else if (currentUserID != 0) {
 
-        Handler handler = new Handler();
-        Runnable runnable = () -> shouldShowInput = false;
-
-        mainImageView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-
-                shouldShowInput = true;
-                handler.postDelayed(runnable, 1000);
-                return true;
+                Utils.saveUserID(MainActivity.this, currentUserID);
+                showCode();
 
             }
-        });
 
-        mainImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (shouldShowInput) {
-                    showInput();
-                    shouldShowInput = false;
-                    handler.removeCallbacks(runnable);
-                }
-
-            }
-        });
+        }
 
     }
 
