@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">ClockIn-ClockOut</string>
+    <string name="app_name">ClockIn ClockOut</string>
+    <string name="enter_id">Enter ID</string>
+    <string name="in">In</string>
+    <string name="out">Out</string>
 </resources>

@@ -20,9 +20,7 @@ public class CodeScannerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barcode_scanner);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setContentView(R.layout.activity_code_scanner);
 
         CodeScannerView codeScannerView = findViewById(R.id.code_scanner_view);
         codeScanner = new CodeScanner(this, codeScannerView);
