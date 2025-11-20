@@ -43,7 +43,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Load profile from intent
         if (!getIntent().hasExtra("profile")) {
-            Toast.makeText(this, "Error loading profile data", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_loading_profile, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

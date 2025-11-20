@@ -58,7 +58,7 @@ public class CodeScannerActivity extends AppCompatActivity {
                 Profile profile = Profile.fromJson(result.getText().trim());
 
                 // Check if decoded JSON has the Profile class structure
-                if (profile.isNull()) throw new Exception("Invalid profile");
+                if (profile.isNull()) throw new Exception(getString(R.string.invalid_profile));
 
                 // Save profile to preferences
                 Utils.saveProfile(this, profile);
@@ -69,7 +69,7 @@ public class CodeScannerActivity extends AppCompatActivity {
                 startActivity(profileIntent);
                 finish();
             } catch (JsonSyntaxException e) {
-                Toast.makeText(this, "Invalid QR code", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.invalid_qr_code, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             } finally {

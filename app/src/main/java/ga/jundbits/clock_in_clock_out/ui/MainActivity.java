@@ -55,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Check if camera is available
             if (!getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-                // TODO: 16-Nov-25 Change all strings to variables for later localization
-                Toast.makeText(this, "Device is missing a camera", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.camera_missing, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -67,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
             } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
                 // Show a dialog explaining why the camera permission is needed
                 new AlertDialog.Builder(this)
-                        .setTitle("Camera permission required")
-                        .setMessage("The camera is needed for the application to scan QR codes")
+                        .setTitle(R.string.camera_permission_required)
+                        .setMessage(R.string.camera_permission_message)
                         .setNegativeButton(android.R.string.cancel, (dialogInterface, i) -> dialogInterface.cancel())
                         .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> requestPermissionLauncher.launch(Manifest.permission.CAMERA))
                         .create().show();
@@ -91,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
         if (granted) scanQrCode();
-        else Toast.makeText(this, "Camera permission was denied", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(this, R.string.camera_permission_denied, Toast.LENGTH_SHORT).show();
     });
 
     private void scanQrCode() {

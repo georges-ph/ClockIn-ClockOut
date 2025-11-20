@@ -4,4 +4,11 @@
     <string name="profile_details">Profile Details</string>
     <string name="in">In</string>
     <string name="out">Out</string>
+    <string name="camera_missing">Device is missing a camera</string>
+    <string name="camera_permission_required">Camera permission required</string>
+    <string name="camera_permission_message">The camera is needed for the application to scan QR codes</string>
+    <string name="camera_permission_denied">Camera permission was denied</string>
+    <string name="invalid_profile">Invalid profile</string>
+    <string name="invalid_qr_code">Invalid QR code</string>
+    <string name="error_loading_profile">Error loading profile data</string>
 </resources>
