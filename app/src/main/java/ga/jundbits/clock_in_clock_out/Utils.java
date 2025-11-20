@@ -47,11 +47,9 @@ public class Utils {
         editor.apply();
     }
 
-    public static int readUserID(Context context) {
-
-        SharedPreferences preferences = context.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
-        return preferences.getInt("user_id", 0);
-
+    public static Profile readProfile(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE);
+        return Profile.fromJson(preferences.getString("profile", null));
     }
 
     public static void writeToFile(Context context, String data) {

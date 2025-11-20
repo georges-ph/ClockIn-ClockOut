@@ -2,11 +2,13 @@ package ga.jundbits.clock_in_clock_out.ui;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -67,6 +69,15 @@ public class ProfileActivity extends AppCompatActivity {
         profileClocking.setTextColor(getColor(profile.getClocking() == Clocking.IN ? R.color.green : R.color.red));
         Bitmap code = Utils.generateCode(this, profile.toJson());
         if (code != null) profileQrCode.setImageBitmap(code);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
     }
 
 }

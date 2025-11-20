@@ -19,8 +19,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.JsonSyntaxException;
 
 import ga.jundbits.clock_in_clock_out.R;
+import ga.jundbits.clock_in_clock_out.Utils;
+import ga.jundbits.clock_in_clock_out.enums.Clocking;
+import ga.jundbits.clock_in_clock_out.models.Profile;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -79,11 +83,41 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mainInButton.setOnClickListener(view -> {
+            try {
+                // Load profile from preferences
+                Profile profile = Utils.readProfile(this);
 
+                // Set clocking
+                profile.setClocking(Clocking.IN);
+
+                // Navigate to ProfileActivity and show the profile
+                Intent profileIntent = new Intent(this, ProfileActivity.class);
+                profileIntent.putExtra("profile", profile.toJson());
+                startActivity(profileIntent);
+            } catch (JsonSyntaxException e) {
+                Toast.makeText(this, R.string.invalid_qr_code, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
 
         mainOutButton.setOnClickListener(view -> {
+            try {
+                // Load profile from preferences
+                Profile profile = Utils.readProfile(this);
 
+                // Set clocking
+                profile.setClocking(Clocking.OUT);
+
+                // Navigate to ProfileActivity and show the profile
+                Intent profileIntent = new Intent(this, ProfileActivity.class);
+                profileIntent.putExtra("profile", profile.toJson());
+                startActivity(profileIntent);
+            } catch (JsonSyntaxException e) {
+                Toast.makeText(this, R.string.invalid_qr_code, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
 
     }
