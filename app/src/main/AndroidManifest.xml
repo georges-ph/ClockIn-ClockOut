@@ -3,12 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -20,7 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClockInClockOut">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CodeScannerActivity"
+            android:name=".ui.CodeScannerActivity"
             android:exported="true" />
     </application>
 

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ClockIn ClockOut</string>
-    <string name="enter_id">Enter ID</string>
+    <string name="scan_qr_code">Scan QR code</string>
+    <string name="profile_details">Profile Details</string>
     <string name="in">In</string>
     <string name="out">Out</string>
 </resources>

@@ -19,29 +19,32 @@ import java.util.Date;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
+import ga.jundbits.clock_in_clock_out.models.Profile;
 
 public class Utils {
 
     public static Bitmap generateCode(Activity activity, String code) {
+        if (code == null || code.isBlank()) return null;
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = displayMetrics.widthPixels;
+        try {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int width = displayMetrics.widthPixels;
 
-        QRGEncoder qrgEncoder = new QRGEncoder(code, null, QRGContents.Type.TEXT, width);
-        qrgEncoder.setColorWhite(Color.BLACK);
-        qrgEncoder.setColorBlack(Color.WHITE);
-        return qrgEncoder.getBitmap();
-
+            QRGEncoder qrgEncoder = new QRGEncoder(code.trim(), null, QRGContents.Type.TEXT, width);
+            qrgEncoder.setColorWhite(Color.BLACK);
+            qrgEncoder.setColorBlack(Color.TRANSPARENT);
+            return qrgEncoder.getBitmap();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public static void saveUserID(Context context, int id) {
-
-        SharedPreferences preferences = context.getSharedPreferences("Preferences", Context.MODE_PRIVATE);
+    public static void saveProfile(Context context, Profile profile) {
+        SharedPreferences preferences = context.getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putInt("user_id", id);
+        editor.putString("profile", profile.toJson());
         editor.apply();
-
     }
 
     public static int readUserID(Context context) {
