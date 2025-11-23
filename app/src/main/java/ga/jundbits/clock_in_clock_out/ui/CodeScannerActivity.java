@@ -3,7 +3,7 @@ package ga.jundbits.clock_in_clock_out.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonSyntaxException;
 
 import ga.jundbits.clock_in_clock_out.R;
@@ -22,6 +23,7 @@ import ga.jundbits.clock_in_clock_out.models.Profile;
 
 public class CodeScannerActivity extends AppCompatActivity {
 
+    private FrameLayout codeScannerLayout;
     private CodeScanner codeScanner;
 
     @Override
@@ -41,13 +43,15 @@ public class CodeScannerActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        codeScannerLayout = findViewById(R.id.code_scanner_layout);
+
         // Setup CodeScanner
         CodeScannerView codeScannerView = findViewById(R.id.code_scanner_view);
         codeScanner = new CodeScanner(this, codeScannerView);
 
         // Handle errors related to the camera from the library
         codeScanner.setErrorCallback(thrown -> runOnUiThread(() -> {
-            Toast.makeText(CodeScannerActivity.this, thrown.getMessage(), Toast.LENGTH_SHORT).show();
+            Snackbar.make(codeScannerLayout, thrown.getMessage() != null ? thrown.getMessage() : getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show();
             finish();
         }));
 
@@ -69,9 +73,9 @@ public class CodeScannerActivity extends AppCompatActivity {
                 startActivity(profileIntent);
                 finish();
             } catch (JsonSyntaxException e) {
-                Toast.makeText(this, R.string.invalid_qr_code, Toast.LENGTH_SHORT).show();
+                Snackbar.make(codeScannerLayout, R.string.invalid_qr_code, Snackbar.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar.make(codeScannerLayout, e.getMessage(), Snackbar.LENGTH_SHORT).show();
             } finally {
                 codeScanner.startPreview();
             }

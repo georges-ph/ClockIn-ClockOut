@@ -16,4 +16,5 @@
     <string name="not_csv_file">Not a CSV file</string>
     <string name="error_selecting_file">Error selecting the file</string>
     <string name="file_empty">File is empty</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>

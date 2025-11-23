@@ -5,22 +5,25 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import ga.jundbits.clock_in_clock_out.enums.Clocking;
+import com.google.android.material.snackbar.Snackbar;
+
 import ga.jundbits.clock_in_clock_out.R;
 import ga.jundbits.clock_in_clock_out.Utils;
+import ga.jundbits.clock_in_clock_out.enums.Clocking;
 import ga.jundbits.clock_in_clock_out.models.Profile;
 
 public class ProfileActivity extends AppCompatActivity {
 
+    private ConstraintLayout profileLayout;
     private TextView profileName, profileId, profileDepartment, profileClocking;
     private ImageView profileQrCode;
 
@@ -45,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Load profile from intent
         if (!getIntent().hasExtra("profile")) {
-            Toast.makeText(this, R.string.error_loading_profile, Toast.LENGTH_SHORT).show();
+            Snackbar.make(profileLayout, R.string.error_loading_profile, Snackbar.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -54,6 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void initVars() {
+        profileLayout = findViewById(R.id.profile_layout);
         profileName = findViewById(R.id.profile_name);
         profileId = findViewById(R.id.profile_id);
         profileDepartment = findViewById(R.id.profile_department);

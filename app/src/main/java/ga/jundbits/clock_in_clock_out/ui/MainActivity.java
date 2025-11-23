@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -24,6 +24,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ import ga.jundbits.clock_in_clock_out.models.Profile;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ConstraintLayout mainLayout;
     private FloatingActionButton mainScanFab;
     private Button mainInButton, mainOutButton;
 
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initVars() {
+        mainLayout = findViewById(R.id.main_layout);
         mainScanFab = findViewById(R.id.main_scan_fab);
         mainInButton = findViewById(R.id.main_in_button);
         mainOutButton = findViewById(R.id.main_out_button);
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Check if camera is available
             if (!getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-                Toast.makeText(this, R.string.camera_missing, Toast.LENGTH_SHORT).show();
+                Snackbar.make(mainLayout, R.string.camera_missing, Snackbar.LENGTH_SHORT).show();
                 return;
             }
 
@@ -104,9 +107,9 @@ public class MainActivity extends AppCompatActivity {
                 profileIntent.putExtra("profile", profile.toJson());
                 startActivity(profileIntent);
             } catch (JsonSyntaxException e) {
-                Toast.makeText(this, R.string.invalid_qr_code, Toast.LENGTH_SHORT).show();
+                Snackbar.make(mainLayout, R.string.invalid_qr_code, Snackbar.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar.make(mainLayout, e.getMessage() != null ? e.getMessage() : getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -123,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
                 profileIntent.putExtra("profile", profile.toJson());
                 startActivity(profileIntent);
             } catch (JsonSyntaxException e) {
-                Toast.makeText(this, R.string.invalid_qr_code, Toast.LENGTH_SHORT).show();
+                Snackbar.make(mainLayout, R.string.invalid_qr_code, Snackbar.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Snackbar.make(mainLayout, e.getMessage() != null ? e.getMessage() : getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -133,7 +136,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
         if (granted) scanQrCode();
-        else Toast.makeText(this, R.string.camera_permission_denied, Toast.LENGTH_SHORT).show();
+        else
+            Snackbar.make(mainLayout, R.string.camera_permission_denied, Snackbar.LENGTH_SHORT).show();
     });
 
     private void scanQrCode() {
@@ -167,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<Intent> startActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() != Activity.RESULT_OK || result.getData() == null || result.getData().getData() == null) {
-            Toast.makeText(this, R.string.no_file_selected, Toast.LENGTH_SHORT).show();
+            Snackbar.make(mainLayout, R.string.no_file_selected, Snackbar.LENGTH_SHORT).show();
             return;
         }
         processFile(result.getData().getData());
@@ -176,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
     private void processFile(Uri fileUri) {
         // Check if file extension is .csv
         if (!Utils.isCSV(this, fileUri)) {
-            Toast.makeText(this, R.string.not_csv_file, Toast.LENGTH_SHORT).show();
+            Snackbar.make(mainLayout, R.string.not_csv_file, Snackbar.LENGTH_SHORT).show();
             return;
         }
 
@@ -188,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Check if file is empty
                 if (content.isEmpty()) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.file_empty, Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Snackbar.make(mainLayout, R.string.file_empty, Snackbar.LENGTH_SHORT).show());
                     return;
                 }
 
@@ -196,16 +200,16 @@ public class MainActivity extends AppCompatActivity {
                 String[] requiredColumns = {"id", "name", "department"};
                 String[] columns = content.getFirst().split(",");
                 if (columns.length < requiredColumns.length || !Arrays.equals(columns, requiredColumns)) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.not_csv_file, Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Snackbar.make(mainLayout, R.string.not_csv_file, Snackbar.LENGTH_SHORT).show());
                     return;
                 }
 
                 // Start inserting into database
                 insertToDB(content);
             } catch (IOException e) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.error_selecting_file, Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Snackbar.make(mainLayout, R.string.error_selecting_file, Snackbar.LENGTH_SHORT).show());
             } catch (Exception e) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Snackbar.make(mainLayout, e.getMessage() != null ? e.getMessage() : getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show());
             }
         }).start();
     }
