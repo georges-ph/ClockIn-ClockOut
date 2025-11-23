@@ -3,19 +3,27 @@ package ga.jundbits.clock_in_clock_out;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.OpenableColumns;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
@@ -50,6 +58,26 @@ public class Utils {
     public static Profile readProfile(Context context) {
         SharedPreferences preferences = context.getSharedPreferences("ProfilePrefs", Context.MODE_PRIVATE);
         return Profile.fromJson(preferences.getString("profile", null));
+    }
+
+    public static boolean isCSV(Context context, Uri uri) {
+        String displayName = null;
+        try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+            }
+        }
+        return displayName != null && displayName.toLowerCase().endsWith(".csv");
+    }
+
+    public static List<String> readFile(Context context, Uri uri) throws IOException {
+        try (InputStream inputStream = context.getContentResolver().openInputStream(uri);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            List<String> lines = new ArrayList<>();
+            String line;
+            while ((line = reader.readLine()) != null) lines.add(line);
+            return lines;
+        }
     }
 
     public static void writeToFile(Context context, String data) {

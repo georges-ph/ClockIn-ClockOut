@@ -11,4 +11,9 @@
     <string name="invalid_profile">Invalid profile</string>
     <string name="invalid_qr_code">Invalid QR code</string>
     <string name="error_loading_profile">Error loading profile data</string>
+    <string name="import_text">Import</string>
+    <string name="no_file_selected">No file selected</string>
+    <string name="not_csv_file">Not a CSV file</string>
+    <string name="error_selecting_file">Error selecting the file</string>
+    <string name="file_empty">File is empty</string>
 </resources>
