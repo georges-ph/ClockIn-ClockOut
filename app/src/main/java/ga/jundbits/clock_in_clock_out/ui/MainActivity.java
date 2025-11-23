@@ -97,16 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainInButton.setOnClickListener(view -> {
             try {
-                // Load profile from preferences
-                Profile profile = Utils.readProfile(this);
-
-                // Set clocking
-                profile.setClocking(Clocking.IN);
-
-                // Navigate to ProfileActivity and show the profile
-                Intent profileIntent = new Intent(this, ProfileActivity.class);
-                profileIntent.putExtra("profile", profile.toJson());
-                startActivity(profileIntent);
+                showProfile(Clocking.IN);
             } catch (JsonSyntaxException e) {
                 Snackbar.make(mainLayout, R.string.invalid_qr_code, Snackbar.LENGTH_SHORT).show();
             } catch (Exception e) {
@@ -116,16 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
         mainOutButton.setOnClickListener(view -> {
             try {
-                // Load profile from preferences
-                Profile profile = Utils.readProfile(this);
-
-                // Set clocking
-                profile.setClocking(Clocking.OUT);
-
-                // Navigate to ProfileActivity and show the profile
-                Intent profileIntent = new Intent(this, ProfileActivity.class);
-                profileIntent.putExtra("profile", profile.toJson());
-                startActivity(profileIntent);
+                showProfile(Clocking.OUT);
             } catch (JsonSyntaxException e) {
                 Snackbar.make(mainLayout, R.string.invalid_qr_code, Snackbar.LENGTH_SHORT).show();
             } catch (Exception e) {
@@ -133,6 +115,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void showProfile(Clocking clocking) {
+        // Load profile from preferences
+        Profile profile = Utils.readProfile(this);
+
+        // Profile not saved and should be QR scanned
+        if (profile == null) {
+            Snackbar.make(mainLayout, R.string.profile_not_found, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Set clocking
+        profile.setClocking(clocking);
+
+        // Navigate to ProfileActivity and show the profile
+        Intent profileIntent = new Intent(this, ProfileActivity.class);
+        profileIntent.putExtra("profile", profile.toJson());
+        startActivity(profileIntent);
     }
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {

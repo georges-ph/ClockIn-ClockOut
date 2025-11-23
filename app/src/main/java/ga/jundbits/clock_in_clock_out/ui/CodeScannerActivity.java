@@ -64,7 +64,8 @@ public class CodeScannerActivity extends AppCompatActivity {
                 // Check if decoded JSON has the Profile class structure
                 if (profile.isNull()) throw new Exception(getString(R.string.invalid_profile));
 
-                // Save profile to preferences
+                // TODO: 23-Nov-25 Check if device has imported data; if so, don't save profile 
+                // Save profile to preferences only if not a scanner device
                 Utils.saveProfile(this, profile);
 
                 // Navigate to ProfileActivity and show the profile
