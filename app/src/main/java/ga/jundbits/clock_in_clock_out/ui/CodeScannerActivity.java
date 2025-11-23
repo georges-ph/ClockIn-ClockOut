@@ -74,9 +74,9 @@ public class CodeScannerActivity extends AppCompatActivity {
                 finish();
             } catch (JsonSyntaxException e) {
                 Snackbar.make(codeScannerLayout, R.string.invalid_qr_code, Snackbar.LENGTH_SHORT).show();
+                codeScanner.startPreview();
             } catch (Exception e) {
-                Snackbar.make(codeScannerLayout, e.getMessage(), Snackbar.LENGTH_SHORT).show();
-            } finally {
+                Snackbar.make(codeScannerLayout, e.getMessage() != null ? e.getMessage() : getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show();
                 codeScanner.startPreview();
             }
         }));

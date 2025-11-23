@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -137,7 +138,11 @@ public class MainActivity extends AppCompatActivity {
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
         if (granted) scanQrCode();
         else
-            Snackbar.make(mainLayout, R.string.camera_permission_denied, Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mainLayout, R.string.camera_permission_denied, Snackbar.LENGTH_SHORT).setAction(R.string.settings, view -> {
+                Intent settingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", getPackageName(), null));
+                settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(settingsIntent);
+            }).show();
     });
 
     private void scanQrCode() {
@@ -198,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // Read first line to check if it has CSV content and if columns are the columns needed
                 String[] requiredColumns = {"id", "name", "department"};
-                String[] columns = content.getFirst().split(",");
+                String[] columns = content.get(0).split(",");
                 if (columns.length < requiredColumns.length || !Arrays.equals(columns, requiredColumns)) {
                     runOnUiThread(() -> Snackbar.make(mainLayout, R.string.not_csv_file, Snackbar.LENGTH_SHORT).show());
                     return;
