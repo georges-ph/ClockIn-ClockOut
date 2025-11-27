@@ -17,6 +17,9 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonSyntaxException;
 
+import java.util.List;
+
+import ga.jundbits.clock_in_clock_out.AppDatabase;
 import ga.jundbits.clock_in_clock_out.R;
 import ga.jundbits.clock_in_clock_out.Utils;
 import ga.jundbits.clock_in_clock_out.models.Profile;
@@ -64,9 +67,11 @@ public class CodeScannerActivity extends AppCompatActivity {
                 // Check if decoded JSON has the Profile class structure
                 if (profile.isNull()) throw new Exception(getString(R.string.invalid_profile));
 
-                // TODO: 23-Nov-25 Check if device has imported data; if so, don't save profile 
-                // Save profile to preferences only if not a scanner device
-                Utils.saveProfile(this, profile);
+                // If there are profiles imported, it's a scanner device. Don't save the profile
+                new Thread(() -> {
+                    List<Profile> profiles = AppDatabase.getInstance(getApplicationContext()).profileDao().getAll();
+                    if (profiles.isEmpty()) Utils.saveProfile(getApplicationContext(), profile);
+                }).start();
 
                 // Navigate to ProfileActivity and show the profile
                 Intent profileIntent = new Intent(this, ProfileActivity.class);
