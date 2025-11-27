@@ -10,6 +10,7 @@ constraintlayout = "2.2.1"
 codescanner = "2.3.0"
 qrGenerator = "1.0.5"
 gson = "2.13.2"
+room = "2.8.4"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -22,6 +23,8 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 codescanner = { group = "com.github.yuriy-budiyev", name = "code-scanner", version.ref = "codescanner" }
 qrGenerator = { group = "com.github.androidmads", name = "QRGenerator", version.ref = "qrGenerator" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+room = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+roomProcessor = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,29 +1,34 @@
 package ga.jundbits.clock_in_clock_out.models;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import com.google.gson.Gson;
 
 import ga.jundbits.clock_in_clock_out.enums.Clocking;
 
+@Entity
 public class Profile {
 
     private static final Gson gson = new Gson();
 
+    @PrimaryKey
     private int id;
     private String name;
     private String department;
+    @Ignore
     private Clocking clocking;
 
     public Profile() {
 
     }
 
-    public Profile(int id, String name, String department, Clocking clocking) {
+    public Profile(int id, String name, String department) {
         this.id = id;
         this.name = name;
         this.department = department;
-        this.clocking = clocking;
     }
 
     public int getId() {

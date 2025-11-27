@@ -64,7 +64,9 @@ public class Utils {
         String displayName = null;
         try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
-                displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                if (index != -1) displayName = cursor.getString(index);
+                else displayName = uri.getLastPathSegment();
             }
         }
         return displayName != null && displayName.toLowerCase().endsWith(".csv");

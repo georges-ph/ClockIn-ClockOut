@@ -8,7 +8,7 @@
     <string name="camera_permission_required">Camera permission required</string>
     <string name="camera_permission_message">The camera is needed for the application to scan QR codes</string>
     <string name="camera_permission_denied">Camera permission was denied</string>
-    <string name="invalid_profile">Invalid profile</string>
+    <string name="invalid_profile">Line %1$d: Invalid profile</string>
     <string name="invalid_qr_code">Invalid QR code</string>
     <string name="error_loading_profile">Error loading profile data</string>
     <string name="import_text">Import</string>
@@ -19,4 +19,7 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="settings">Settings</string>
     <string name="profile_not_found">Profile not found</string>
+    <string name="import_message">Imported %1$d out of %2$d profiles</string>
+    <string name="error_importing_profiles">Error importing profiles</string>
+    <string name="error_parsing_numbers">Error parsing numbers</string>
 </resources>

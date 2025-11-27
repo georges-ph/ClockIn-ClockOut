@@ -38,6 +38,8 @@ dependencies {
     implementation libs.codescanner
     implementation libs.qrGenerator
     implementation libs.gson
+    implementation libs.room
+    annotationProcessor libs.roomProcessor
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
