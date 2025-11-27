@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 
 import ga.jundbits.clock_in_clock_out.enums.Clocking;
 
-@Entity(tableName = "attendances", foreignKeys = @ForeignKey(entity = Profile.class, parentColumns = "id", childColumns = "employeeId"))
+@Entity(tableName = "attendances")
 public class Attendance {
 
     @PrimaryKey(autoGenerate = true)
