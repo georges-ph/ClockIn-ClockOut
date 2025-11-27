@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                 // Skip empty lines
                 if (line.isBlank()) {
                     // Add 2 to the index instead of 1. List is zero based and the headers line is removed
-                    runOnUiThread(() -> Toast.makeText(this, getString(R.string.invalid_profile, lines.indexOf(line) + 2), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(this, getString(R.string.invalid_profile_with_line, lines.indexOf(line) + 2), Toast.LENGTH_SHORT).show());
                     continue;
                 }
 
@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                 // Skip lines that don't have 3 columns and skip any entry that has an empty column
                 if (parts.length != 3 || parts[0].isBlank() || parts[1].isBlank() || parts[2].isBlank()) {
                     // Add 2 to the index instead of 1. List is zero based and the headers line is removed
-                    runOnUiThread(() -> Toast.makeText(this, getString(R.string.invalid_profile, lines.indexOf(line) + 2), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(this, getString(R.string.invalid_profile_with_line, lines.indexOf(line) + 2), Toast.LENGTH_SHORT).show());
                     continue;
                 }
 

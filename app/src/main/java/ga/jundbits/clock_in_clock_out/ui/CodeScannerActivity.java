@@ -69,8 +69,8 @@ public class CodeScannerActivity extends AppCompatActivity {
 
                 // If there are profiles imported, it's a scanner device. Don't save the profile
                 new Thread(() -> {
-                    List<Profile> profiles = AppDatabase.getInstance(getApplicationContext()).profileDao().getAll();
-                    if (profiles.isEmpty()) Utils.saveProfile(getApplicationContext(), profile);
+                    int count = AppDatabase.getInstance(getApplicationContext()).profileDao().count();
+                    if (count == 0) Utils.saveProfile(getApplicationContext(), profile);
                 }).start();
 
                 // Navigate to ProfileActivity and show the profile

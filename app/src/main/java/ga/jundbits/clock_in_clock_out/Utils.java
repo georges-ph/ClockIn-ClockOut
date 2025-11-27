@@ -3,6 +3,7 @@ package ga.jundbits.clock_in_clock_out;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -31,6 +32,11 @@ import ga.jundbits.clock_in_clock_out.models.Profile;
 
 public class Utils {
 
+    public static boolean isDarkTheme(Context context) {
+        int currentNightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return currentNightMode == Configuration.UI_MODE_NIGHT_YES;
+    }
+
     public static Bitmap generateCode(Activity activity, String code) {
         if (code == null || code.isBlank()) return null;
 
@@ -40,7 +46,7 @@ public class Utils {
             int width = displayMetrics.widthPixels;
 
             QRGEncoder qrgEncoder = new QRGEncoder(code.trim(), null, QRGContents.Type.TEXT, width);
-            qrgEncoder.setColorWhite(Color.BLACK);
+            qrgEncoder.setColorWhite(isDarkTheme(activity) ? Color.WHITE : Color.BLACK);
             qrgEncoder.setColorBlack(Color.TRANSPARENT);
             return qrgEncoder.getBitmap();
         } catch (Exception e) {

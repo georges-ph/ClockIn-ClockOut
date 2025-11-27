@@ -14,6 +14,9 @@ public interface ProfileDao {
     @Query("SELECT * FROM profile ORDER BY id ASC")
     List<Profile> getAll();
 
+    @Query("SELECT count(*) FROM profile")
+    int count();
+
     @Insert
     void insertAll(List<Profile> profiles);
 

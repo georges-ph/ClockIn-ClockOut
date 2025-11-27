@@ -1,11 +1,13 @@
 package ga.jundbits.clock_in_clock_out.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -25,6 +27,7 @@ import java.util.List;
 
 import ga.jundbits.clock_in_clock_out.AppDatabase;
 import ga.jundbits.clock_in_clock_out.R;
+import ga.jundbits.clock_in_clock_out.enums.Clocking;
 import ga.jundbits.clock_in_clock_out.models.Profile;
 
 public class ProfilesActivity extends AppCompatActivity {
@@ -87,6 +90,16 @@ public class ProfilesActivity extends AppCompatActivity {
                     }
                 };
                 profilesListView.setAdapter(adapter);
+
+                // Open profile activity when clicking a list item
+                profilesListView.setOnItemClickListener((adapterView, view, i, l) -> {
+                    Profile profile = filteredProfiles.get(i);
+                    profile.setClocking(Clocking.IN);
+                    Intent profileIntent = new Intent(ProfilesActivity.this, ProfileActivity.class);
+                    profileIntent.putExtra("profile", profile.toJson());
+                    startActivity(profileIntent);
+                    finish();
+                });
             });
 
         }).start();
