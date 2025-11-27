@@ -6,6 +6,11 @@
         android:id="@+id/main_menu_import"
         android:icon="@drawable/ic_import"
         android:title="@string/import_text"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/main_menu_profiles"
+        android:icon="@drawable/ic_contacts"
+        android:title="@string/profiles"
+        app:showAsAction="never" />
 
 </menu>

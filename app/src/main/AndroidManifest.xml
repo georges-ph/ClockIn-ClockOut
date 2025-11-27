@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ClockInClockOut">
         <activity
+            android:name=".ui.ProfilesActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.ProfileActivity"
             android:exported="false" />
         <activity

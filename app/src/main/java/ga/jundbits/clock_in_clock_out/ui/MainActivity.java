@@ -178,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.main_menu_import) {
             importProfiles();
             return true;
+        } else if (item.getItemId() == R.id.main_menu_profiles) {
+            startActivity(new Intent(this, ProfilesActivity.class));
+            return true;
         }
         return false;
     }

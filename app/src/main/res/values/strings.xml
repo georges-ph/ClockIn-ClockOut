@@ -22,4 +22,6 @@
     <string name="import_message">Imported %1$d out of %2$d profiles</string>
     <string name="error_importing_profiles">Error importing profiles</string>
     <string name="error_parsing_numbers">Error parsing numbers</string>
+    <string name="profiles">Profiles</string>
+    <string name="no_profiles">No profiles available</string>
 </resources>
