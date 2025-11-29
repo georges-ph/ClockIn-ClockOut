@@ -14,6 +14,9 @@ public interface ProfileDao {
     @Query("SELECT * FROM profile ORDER BY id ASC")
     List<Profile> getAll();
 
+    @Query("SELECT * FROM profile WHERE id = :id")
+    Profile getById(int id);
+
     @Query("SELECT count(*) FROM profile")
     int count();
 

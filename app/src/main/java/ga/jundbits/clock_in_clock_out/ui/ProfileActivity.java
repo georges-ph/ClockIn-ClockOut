@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonSyntaxException;
 
 import ga.jundbits.clock_in_clock_out.AppDatabase;
 import ga.jundbits.clock_in_clock_out.R;
@@ -25,12 +27,14 @@ import ga.jundbits.clock_in_clock_out.enums.Clocking;
 import ga.jundbits.clock_in_clock_out.models.Attendance;
 import ga.jundbits.clock_in_clock_out.models.Profile;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ConstraintLayout profileLayout;
     private TextView profileName, profileId, profileDepartment, profileClocking;
     private ImageView profileQrCode;
     private Button profileAttendButton;
+
+    private Profile profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,30 +57,39 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Load profile from intent
         if (!getIntent().hasExtra("profile")) {
-            Snackbar.make(profileLayout, R.string.error_loading_profile, Snackbar.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.error_loading_profile, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        Profile profile = Profile.fromJson(getIntent().getStringExtra("profile"));
-        if (profile == null) return;
-        showProfile(profile);
+
+        try {
+            profile = Profile.fromJson(getIntent().getStringExtra("profile"));
+            if (profile == null) return;
+            showProfile(profile);
+        } catch (JsonSyntaxException e) {
+            Toast.makeText(this, R.string.error_loading_profile, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage() != null ? e.getMessage() : getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         // If there are profiles imported, it's a scanner device. Don't show the button
         new Thread(() -> {
-            int count = AppDatabase.getInstance(this).profileDao().count();
-            runOnUiThread(() -> {
-                if (count == 0) profileAttendButton.setVisibility(View.INVISIBLE);
-            });
+            try {
+                int count = AppDatabase.getInstance(this).profileDao().count();
+                runOnUiThread(() -> {
+                    if (count == 0) profileAttendButton.setVisibility(View.INVISIBLE);
+                });
+            } catch (Exception e) {
+                Snackbar.make(profileLayout, e.getMessage() != null ? e.getMessage() : getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show();
+            }
         }).start();
 
         // Set button onClick to insert a new attendance with scanned profile data along with scanner timestamp
-        profileAttendButton.setOnClickListener(view -> {
-            Attendance attendance = new Attendance(profile.getId(), profile.getClocking(), System.currentTimeMillis());
-            new Thread(() -> {
-                AppDatabase.getInstance(this).attendanceDao().insert(attendance);
-                runOnUiThread(this::finish);
-            }).start();
-        });
+        profileAttendButton.setOnClickListener(this);
     }
 
     private void initVars() {
@@ -106,6 +119,42 @@ public class ProfileActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View view) {
+        // No need to check for button ID as it's the only button here
+
+        new Thread(() -> {
+            try {
+                AppDatabase database = AppDatabase.getInstance(this);
+
+                // Check if profile exists in database before inserting attendance
+                Profile dbProfile = database.profileDao().getById(profile.getId());
+                if (dbProfile == null) {
+                    runOnUiThread(() -> Snackbar.make(profileLayout, R.string.profile_not_found, Snackbar.LENGTH_SHORT).show());
+                    return;
+                }
+
+                // Prevent duplicate clocking
+                Attendance lastAttendance = database.attendanceDao().getLast(profile.getId());
+                if (lastAttendance != null && lastAttendance.getClocking() == profile.getClocking()) {
+                    runOnUiThread(() -> Snackbar.make(profileLayout, getString(R.string.clocking_twice, profile.getClocking().name()), Snackbar.LENGTH_SHORT).show());
+                    return;
+                }
+
+                // Insert the attendance to the database
+                database.attendanceDao().insert(new Attendance(profile.getId(), profile.getClocking(), System.currentTimeMillis()));
+
+                // Show success toast message and close activity
+                runOnUiThread(() -> {
+                    Toast.makeText(this, R.string.attended_successfully, Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+            } catch (Exception e) {
+                runOnUiThread(() -> Snackbar.make(profileLayout, e.getMessage() != null ? e.getMessage() : getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show());
+            }
+        }).start();
     }
 
 }
