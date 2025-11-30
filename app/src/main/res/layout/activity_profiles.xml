@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.ProfilesActivity">
 
+    <ProgressBar
+        android:id="@+id/profiles_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/profiles_no_profiles"
         android:layout_width="0dp"
