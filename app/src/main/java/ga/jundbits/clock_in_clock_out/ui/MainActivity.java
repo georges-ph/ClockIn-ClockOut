@@ -28,9 +28,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonSyntaxException;
 
 import ga.jundbits.clock_in_clock_out.R;
-import ga.jundbits.clock_in_clock_out.utils.Utils;
-import ga.jundbits.clock_in_clock_out.enums.Clocking;
 import ga.jundbits.clock_in_clock_out.data.entity.Profile;
+import ga.jundbits.clock_in_clock_out.enums.Clocking;
+import ga.jundbits.clock_in_clock_out.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -113,22 +113,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showProfile(Clocking clocking) {
-        // Load profile from preferences
-        Profile profile = Utils.readProfile(this);
+        try {
+            // Load profile from preferences
+            Profile profile = Utils.readProfile(this);
 
-        // Profile not saved and should be QR scanned
-        if (profile == null) {
-            Snackbar.make(mainLayout, R.string.profile_not_found, Snackbar.LENGTH_SHORT).show();
-            return;
+            // Profile not saved and should be QR scanned
+            if (profile == null) {
+                Snackbar.make(mainLayout, R.string.profile_not_found, Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Set clocking
+            profile.setClocking(clocking);
+
+            // Navigate to ProfileActivity and show the profile
+            Intent profileIntent = new Intent(this, ProfileActivity.class);
+            profileIntent.putExtra("profile", profile.toJson());
+            startActivity(profileIntent);
+        } catch (Exception e) {
+            Snackbar.make(mainLayout, e.getMessage() != null ? e.getMessage() : getString(R.string.something_went_wrong), Snackbar.LENGTH_SHORT).show();
         }
-
-        // Set clocking
-        profile.setClocking(clocking);
-
-        // Navigate to ProfileActivity and show the profile
-        Intent profileIntent = new Intent(this, ProfileActivity.class);
-        profileIntent.putExtra("profile", profile.toJson());
-        startActivity(profileIntent);
     }
 
     private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {

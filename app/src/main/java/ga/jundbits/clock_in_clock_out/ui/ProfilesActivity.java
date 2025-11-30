@@ -278,8 +278,14 @@ public class ProfilesActivity extends AppCompatActivity {
                 AppDatabase.getInstance(ProfilesActivity.this).profileDao().insertAll(profiles);
             });
 
-            // Show success message
-            runOnUiThread(() -> Snackbar.make(profilesLayout, getString(R.string.import_message, profiles.size(), lines.size()), Snackbar.LENGTH_SHORT).show());
+            runOnUiThread(() -> {
+                // Add profiles to list
+                filteredProfiles.clear();
+                filteredProfiles.addAll(profiles);
+                adapter.notifyDataSetChanged();
+                // Show success message
+                Snackbar.make(profilesLayout, getString(R.string.import_message, profiles.size(), lines.size()), Snackbar.LENGTH_SHORT).show();
+            });
         } catch (NumberFormatException e) {
             runOnUiThread(() -> Snackbar.make(profilesLayout, R.string.error_parsing_numbers, Snackbar.LENGTH_SHORT).show());
         } catch (Exception e) {
