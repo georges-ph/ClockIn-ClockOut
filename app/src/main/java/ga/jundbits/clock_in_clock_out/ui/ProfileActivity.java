@@ -20,12 +20,12 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonSyntaxException;
 
-import ga.jundbits.clock_in_clock_out.AppDatabase;
+import ga.jundbits.clock_in_clock_out.data.database.AppDatabase;
 import ga.jundbits.clock_in_clock_out.R;
-import ga.jundbits.clock_in_clock_out.Utils;
+import ga.jundbits.clock_in_clock_out.utils.Utils;
 import ga.jundbits.clock_in_clock_out.enums.Clocking;
-import ga.jundbits.clock_in_clock_out.models.Attendance;
-import ga.jundbits.clock_in_clock_out.models.Profile;
+import ga.jundbits.clock_in_clock_out.data.entity.Attendance;
+import ga.jundbits.clock_in_clock_out.data.entity.Profile;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 

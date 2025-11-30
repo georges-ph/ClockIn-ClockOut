@@ -1,4 +1,4 @@
-package ga.jundbits.clock_in_clock_out;
+package ga.jundbits.clock_in_clock_out.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -25,7 +25,7 @@ import java.util.List;
 
 import androidmads.library.qrgenearator.QRGContents;
 import androidmads.library.qrgenearator.QRGEncoder;
-import ga.jundbits.clock_in_clock_out.models.Profile;
+import ga.jundbits.clock_in_clock_out.data.entity.Profile;
 
 public class Utils {
 

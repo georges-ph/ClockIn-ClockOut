@@ -30,11 +30,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import ga.jundbits.clock_in_clock_out.AppDatabase;
+import ga.jundbits.clock_in_clock_out.data.database.AppDatabase;
 import ga.jundbits.clock_in_clock_out.R;
-import ga.jundbits.clock_in_clock_out.Utils;
+import ga.jundbits.clock_in_clock_out.utils.Utils;
 import ga.jundbits.clock_in_clock_out.enums.Clocking;
-import ga.jundbits.clock_in_clock_out.models.ProfileAttendance;
+import ga.jundbits.clock_in_clock_out.data.entity.ProfileAttendance;
 
 
 public class AttendanceActivity extends AppCompatActivity {

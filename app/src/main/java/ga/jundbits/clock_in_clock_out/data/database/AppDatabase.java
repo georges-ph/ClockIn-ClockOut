@@ -1,4 +1,4 @@
-package ga.jundbits.clock_in_clock_out;
+package ga.jundbits.clock_in_clock_out.data.database;
 
 import android.content.Context;
 
@@ -6,10 +6,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import ga.jundbits.clock_in_clock_out.dao.AttendanceDao;
-import ga.jundbits.clock_in_clock_out.dao.ProfileDao;
-import ga.jundbits.clock_in_clock_out.models.Attendance;
-import ga.jundbits.clock_in_clock_out.models.Profile;
+import ga.jundbits.clock_in_clock_out.data.dao.AttendanceDao;
+import ga.jundbits.clock_in_clock_out.data.dao.ProfileDao;
+import ga.jundbits.clock_in_clock_out.data.entity.Attendance;
+import ga.jundbits.clock_in_clock_out.data.entity.Profile;
 
 @Database(entities = {Profile.class, Attendance.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {

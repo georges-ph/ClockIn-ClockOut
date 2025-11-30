@@ -1,4 +1,4 @@
-package ga.jundbits.clock_in_clock_out.models;
+package ga.jundbits.clock_in_clock_out.data.entity;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

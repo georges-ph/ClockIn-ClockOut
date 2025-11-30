@@ -17,12 +17,10 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonSyntaxException;
 
-import java.util.List;
-
-import ga.jundbits.clock_in_clock_out.AppDatabase;
+import ga.jundbits.clock_in_clock_out.data.database.AppDatabase;
 import ga.jundbits.clock_in_clock_out.R;
-import ga.jundbits.clock_in_clock_out.Utils;
-import ga.jundbits.clock_in_clock_out.models.Profile;
+import ga.jundbits.clock_in_clock_out.utils.Utils;
+import ga.jundbits.clock_in_clock_out.data.entity.Profile;
 
 public class CodeScannerActivity extends AppCompatActivity {
 

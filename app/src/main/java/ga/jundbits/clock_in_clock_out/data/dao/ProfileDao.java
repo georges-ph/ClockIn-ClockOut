@@ -1,4 +1,4 @@
-package ga.jundbits.clock_in_clock_out.dao;
+package ga.jundbits.clock_in_clock_out.data.dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -6,7 +6,7 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import ga.jundbits.clock_in_clock_out.models.Profile;
+import ga.jundbits.clock_in_clock_out.data.entity.Profile;
 
 @Dao
 public interface ProfileDao {

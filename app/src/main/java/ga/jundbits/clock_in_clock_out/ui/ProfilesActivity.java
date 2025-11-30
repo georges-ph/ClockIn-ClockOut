@@ -35,11 +35,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ga.jundbits.clock_in_clock_out.AppDatabase;
+import ga.jundbits.clock_in_clock_out.data.database.AppDatabase;
 import ga.jundbits.clock_in_clock_out.R;
-import ga.jundbits.clock_in_clock_out.Utils;
+import ga.jundbits.clock_in_clock_out.utils.Utils;
 import ga.jundbits.clock_in_clock_out.enums.Clocking;
-import ga.jundbits.clock_in_clock_out.models.Profile;
+import ga.jundbits.clock_in_clock_out.data.entity.Profile;
 
 public class ProfilesActivity extends AppCompatActivity {
 
