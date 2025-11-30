@@ -8,15 +8,12 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.util.DisplayMetrics;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -93,37 +90,17 @@ public class Utils {
         return formatter.format(new Date(timestamp));
     }
 
-    public static void writeToFile(Context context, String data) {
-
-        Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("EEEE_MMMM_dd_yyyy");
-
-        File appStorageDirectory = new File(Environment.getExternalStorageDirectory(), context.getString(R.string.app_name));
-        File usersFile = new File(appStorageDirectory, "users_" + formatter.format(date) + ".csv");
-
-        if (!appStorageDirectory.exists())
-            appStorageDirectory.mkdirs();
-
-        try {
-
-            FileWriter writer = new FileWriter(usersFile, true);
-            writer.write(data + "\n");
-            writer.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+    public static String getCurrentFormattedDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        return formatter.format(Calendar.getInstance().getTime());
     }
 
-    public static void closeKeyboard(Activity activity) {
-
-        View closeKeyboardView = activity.getCurrentFocus();
-        if (closeKeyboardView != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(closeKeyboardView.getWindowToken(), 0);
-        }
-
+    public static File createFile(Context context, String filename, String data) throws IOException {
+        FileOutputStream stream = context.openFileOutput(filename, Context.MODE_PRIVATE);
+        stream.write(data.getBytes());
+        stream.flush();
+        stream.close();
+        return new File(context.getFilesDir().getAbsolutePath() + "/" + filename);
     }
 
 }

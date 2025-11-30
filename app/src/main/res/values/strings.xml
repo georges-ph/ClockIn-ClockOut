@@ -29,5 +29,8 @@
     <string name="clocking_twice">Cannot clock %1$s twice</string>
     <string name="attended_successfully">Attended successfully</string>
     <string name="attendance">Attendance</string>
-    <string name="no_attendances">No attendance available</string>
+    <string name="no_attendance">No attendance available</string>
+    <string name="error_creating_file">Error creating file</string>
+    <string name="file_saved">File saved to %1$s</string>
+    <string name="export_text">Export</string>
 </resources>
