@@ -181,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.main_menu_profiles) {
             startActivity(new Intent(this, ProfilesActivity.class));
             return true;
+        } else if (item.getItemId() == R.id.main_menu_attendance) {
+            startActivity(new Intent(this, AttendanceActivity.class));
+            return true;
         }
         return false;
     }

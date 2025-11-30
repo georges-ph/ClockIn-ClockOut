@@ -12,5 +12,10 @@
         android:icon="@drawable/ic_contacts"
         android:title="@string/profiles"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/main_menu_attendance"
+        android:icon="@drawable/ic_attendance"
+        android:title="@string/attendance"
+        app:showAsAction="never" />
 
 </menu>

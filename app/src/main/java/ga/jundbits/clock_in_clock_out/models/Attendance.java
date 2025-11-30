@@ -2,12 +2,11 @@ package ga.jundbits.clock_in_clock_out.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import ga.jundbits.clock_in_clock_out.enums.Clocking;
 
-@Entity(tableName = "attendances")
+@Entity
 public class Attendance {
 
     @PrimaryKey(autoGenerate = true)

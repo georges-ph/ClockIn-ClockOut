@@ -28,4 +28,6 @@
     <string name="attend">Attend</string>
     <string name="clocking_twice">Cannot clock %1$s twice</string>
     <string name="attended_successfully">Attended successfully</string>
+    <string name="attendance">Attendance</string>
+    <string name="no_attendances">No attendance available</string>
 </resources>

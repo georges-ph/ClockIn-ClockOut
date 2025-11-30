@@ -88,6 +88,11 @@ public class Utils {
         }
     }
 
+    public static String formatDate(long timestamp) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MMM/yyyy hh:mm a");
+        return formatter.format(new Date(timestamp));
+    }
+
     public static void writeToFile(Context context, String data) {
 
         Date date = Calendar.getInstance().getTime();
