@@ -8,6 +8,16 @@ Designed for small companies — no hardware or internet required.
 
 The idea came to me while watching a movie. In one scene, an employee was leaving work and had to scan his card at the company gate to clock out. It made me think: what about small companies? They usually don't have the budget to invest in such system. A dedicated hardware like card readers or access gates. So why not build a simple alternative but as a mobile app? A lightweight and affordable solution that handles employee clock-ins and clock-outs using nothing more than a phone.
 
+## Screenshots
+
+|Home|Profile|
+|:---:|:---:|
+|<img src="images/home.png" width="200">|<img src="images/profile.png" width="200">|
+
+|Profiles|Attendance|
+|:---:|:---:|
+|<img src="images/profiles.png" width="200">|<img src="images/attendance.png" width="200">|
+
 ## How to use
 
 The app can be split into two roles: employee and security guard. The security guard will take care of scanning employees QR codes at the entrance.
