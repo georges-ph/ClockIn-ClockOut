@@ -15,7 +15,11 @@ public interface AttendanceDao {
 
     @Transaction
     @Query("SELECT * FROM attendance ORDER BY timestamp DESC")
-    List<ProfileAttendance> getAll();
+    List<ProfileAttendance> getAllByTimestamp();
+
+    @Transaction
+    @Query("SELECT * FROM attendance ORDER BY id DESC")
+    List<ProfileAttendance> getAllById();
 
     @Insert
     void insert(Attendance attendance);

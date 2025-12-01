@@ -73,7 +73,7 @@ public class AttendanceActivity extends AppCompatActivity {
     private void setupAdapter() {
         new Thread(() -> {
             // Get attendance list from database
-            List<ProfileAttendance> attendanceList = AppDatabase.getInstance(this).attendanceDao().getAll();
+            List<ProfileAttendance> attendanceList = AppDatabase.getInstance(this).attendanceDao().getAllByTimestamp();
 
             runOnUiThread(() -> {
                 // Show no attendance text if list is empty
@@ -126,7 +126,7 @@ public class AttendanceActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 // Load data from database
-                List<ProfileAttendance> attendances = AppDatabase.getInstance(this).attendanceDao().getAll();
+                List<ProfileAttendance> attendances = AppDatabase.getInstance(this).attendanceDao().getAllById();
                 if (attendances.isEmpty()) {
                     runOnUiThread(() -> Snackbar.make(attendanceLayout, R.string.no_attendance, Snackbar.LENGTH_SHORT).show());
                     return;
@@ -134,8 +134,9 @@ public class AttendanceActivity extends AppCompatActivity {
 
                 // Build CSV
                 StringBuilder builder = new StringBuilder();
-                builder.append("id,name,department,clocking,timestamp\n");
+                builder.append("attendance ID,employee ID,name,department,clocking,timestamp\n");
                 for (ProfileAttendance profileAttendance : attendances) {
+                    builder.append(profileAttendance.attendance.getId()).append(",");
                     builder.append(profileAttendance.profile.getId()).append(",");
                     builder.append(profileAttendance.profile.getName()).append(",");
                     builder.append(profileAttendance.profile.getDepartment()).append(",");
