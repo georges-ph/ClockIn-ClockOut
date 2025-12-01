@@ -242,7 +242,7 @@ public class ProfilesActivity extends AppCompatActivity {
         });
 
         try {
-            List<Profile> profiles = new ArrayList<>();
+            List<Profile> profileList = new ArrayList<>();
 
             // Iterate through each line in the file
             for (String line : lines) {
@@ -265,26 +265,33 @@ public class ProfilesActivity extends AppCompatActivity {
 
                 // Map to profile object and add to list
                 Profile profile = new Profile(Integer.parseInt(parts[0].trim()), parts[1].trim(), parts[2].trim());
-                profiles.add(profile);
+                profileList.add(profile);
 
                 // Update progress bar to current profiles list size
-                runOnUiThread(() -> profilesProgressBar.setProgress(profiles.size()));
+                runOnUiThread(() -> profilesProgressBar.setProgress(profileList.size()));
             }
 
             AppDatabase.getInstance(this).runInTransaction(() -> {
                 // Empty profile table
                 AppDatabase.getInstance(getApplicationContext()).profileDao().deleteAll();
                 // Insert list into database
-                AppDatabase.getInstance(ProfilesActivity.this).profileDao().insertAll(profiles);
+                AppDatabase.getInstance(ProfilesActivity.this).profileDao().insertAll(profileList);
             });
 
             runOnUiThread(() -> {
-                // Add profiles to list
+                // Add profiles to lists
+                profiles.clear();
+                profiles.addAll(profileList);
                 filteredProfiles.clear();
-                filteredProfiles.addAll(profiles);
+                filteredProfiles.addAll(profileList);
                 adapter.notifyDataSetChanged();
+
+                // Show no profiles text when filtered list is empty and hide it otherwise
+                if (filteredProfiles.isEmpty()) profilesNoProfiles.setVisibility(View.VISIBLE);
+                else profilesNoProfiles.setVisibility(View.GONE);
+
                 // Show success message
-                Snackbar.make(profilesLayout, getString(R.string.import_message, profiles.size(), lines.size()), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(profilesLayout, getString(R.string.import_message, profileList.size(), lines.size()), Snackbar.LENGTH_SHORT).show();
             });
         } catch (NumberFormatException e) {
             runOnUiThread(() -> Snackbar.make(profilesLayout, R.string.error_parsing_numbers, Snackbar.LENGTH_SHORT).show());
