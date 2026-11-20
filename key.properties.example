@@ -1,0 +1,6 @@
+# Copy to key.properties (git-ignored) to sign release builds with your own key.
+# Without it, release builds are signed with the debug key.
+storeFile=C:/path/to/your/keystore.jks
+storePassword=your-store-password
+keyAlias=your-key-alias
+keyPassword=your-key-password

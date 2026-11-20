@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <files-path
-        name="files"
-        path="." />
+    <!-- Badge images and CSV exports are written here before sharing. -->
+    <cache-path
+        name="shared"
+        path="shared/" />
 </paths>

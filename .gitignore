@@ -9,3 +9,9 @@ app/release
 .externalNativeBuild
 .cxx
 local.properties
+
+# Release signing: per machine, never committed (see key.properties.example).
+key.properties
+*.jks
+*.keystore
+*.apk
