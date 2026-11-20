@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ClockIn ClockOut: clock in with a badge, no hardware needed</title>
+<meta name="description" content="A free Android app for small companies: one phone at the entrance scans employee badges and records who clocks in and out. No card readers, no server, no internet. Open source.">
+<link rel="icon" href="logo.svg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://georges-ph.github.io/ClockIn-ClockOut/">
+<meta property="og:title" content="ClockIn ClockOut: clock in with a badge, no hardware needed">
+<meta property="og:description" content="One phone at the entrance scans badges and records who clocks in and out. Free and open source.">
+<meta property="og:image" content="https://georges-ph.github.io/ClockIn-ClockOut/screenshots/badge.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  /* Same layout as the other project pages (sticky nav, hero, steps, feature
+     cards, screenshots, download), in the app's own identity: cobalt badge
+     colors in light mode, the night-shift mint and amber in dark mode, and
+     Manrope, as in ui/theme/Theme.kt. */
+  :root {
+    --bg: #f4f6fb;
+    --bg-elev: #ffffff;
+    --fg: #111827;
+    --fg-muted: #5b6478;
+    --border: #e3e7f0;
+    --in: #1d4ed8;
+    --on-in: #ffffff;
+    --in-soft: #e8eefd;
+    --out: #c2410c;
+    --out-soft: #fdede3;
+    --avatar: #dce5fb;
+    --radius: 22px;
+    --shadow: 0 20px 60px -28px rgba(17, 24, 39, 0.35);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1116;
+      --bg-elev: #171b22;
+      --fg: #e8ecf2;
+      --fg-muted: #9aa3b2;
+      --border: #262c36;
+      --in: #3ddc97;
+      --on-in: #062417;
+      --in-soft: #1f3a2f;
+      --out: #ffb547;
+      --out-soft: #3a2a10;
+      --avatar: #1f3a2f;
+      --shadow: 0 30px 80px -30px rgba(0, 0, 0, 0.7);
+      color-scheme: dark;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  /* Sections stop below the sticky nav instead of under it. */
+  [id] { scroll-margin-top: 76px; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding-inline: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  img { display: block; max-width: 100%; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  code { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.92em; }
+  .wrap { max-width: 1140px; margin-inline: auto; }
+  .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--in); }
+
+  /* ---- Nav ---- */
+  nav.top {
+    position: sticky; top: 0; z-index: 50;
+    padding-block: 14px;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+  }
+  nav.top.scrolled { border-bottom-color: var(--border); }
+  .navrow { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 18px; min-width: 0; white-space: nowrap; }
+  .brand img { width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0; }
+  .brand span { overflow: hidden; text-overflow: ellipsis; }
+  .navlinks { display: flex; gap: 26px; font-size: 15px; font-weight: 700; color: var(--fg-muted); }
+  .navlinks a:hover { color: var(--fg); }
+  .navcta { display: flex; align-items: center; gap: 10px; }
+  @media (max-width: 800px) { .navlinks { display: none; } }
+  @media (max-width: 420px) { .navcta .btn-ghost { display: none; } }
+  @media (max-width: 380px) {
+    .brand { font-size: 15px; gap: 8px; }
+    .brand img { width: 28px; height: 28px; }
+    .navcta .btn { padding: 9px 14px; font-size: 14px; }
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 20px; border-radius: 14px;
+    font-weight: 800; font-size: 15px;
+    border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+  }
+  .btn-primary { background: var(--in); color: var(--on-in); }
+  .btn-ghost { background: var(--bg-elev); border-color: var(--border); color: var(--fg); }
+
+  /* ---- Hero ---- */
+  .hero {
+    display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center;
+    padding-block: 48px 40px;
+  }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; padding-block: 28px 16px; } }
+  .hero-copy { display: flex; flex-direction: column; gap: 22px; }
+  .hero h1 { font-size: clamp(34px, 5.2vw, 58px); font-weight: 800; line-height: 1.06; letter-spacing: -0.02em; }
+  .hero h1 .in { color: var(--in); }
+  .hero h1 .out { color: var(--out); }
+  .hero-sub { font-size: 18px; color: var(--fg-muted); max-width: 46ch; line-height: 1.55; }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-fine { font-size: 14px; color: var(--fg-muted); }
+
+  /* Badge mockup, drawn like the app's badge card. */
+  .hero-visual { display: flex; justify-content: center; }
+  .badge-card {
+    width: min(320px, 100%);
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .strip { height: 56px; background: var(--in); display: flex; justify-content: center; padding-top: 14px; }
+  .slot { width: 56px; height: 10px; border-radius: 5px; background: var(--bg); }
+  .person { display: flex; align-items: center; gap: 14px; padding: 20px 22px 0; }
+  .avatar {
+    width: 56px; height: 56px; border-radius: 50%; flex-shrink: 0;
+    background: var(--avatar); color: var(--in);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 20px;
+  }
+  .person strong { display: block; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+  .person span { font-size: 14px; color: var(--fg-muted); }
+  .qr { display: flex; justify-content: center; padding: 22px 0; }
+  .qr svg { width: 210px; height: 210px; background: #fff; border-radius: 14px; padding: 8px; }
+  .card-foot {
+    border-top: 1px solid var(--border);
+    padding: 14px 22px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 14px; color: var(--fg-muted);
+  }
+  .chip { font-size: 13px; font-weight: 800; padding: 4px 9px; border-radius: 8px; }
+  .chip.in { background: var(--in-soft); color: var(--in); }
+  .chip.out { background: var(--out-soft); color: var(--out); }
+
+  /* ---- Sections ---- */
+  section { padding-block: 64px; }
+  .section-head { max-width: 640px; margin-bottom: 36px; display: flex; flex-direction: column; gap: 10px; }
+  .section-head h2 { font-size: clamp(28px, 3.6vw, 38px); font-weight: 800; letter-spacing: -0.02em; }
+  .section-head p { color: var(--fg-muted); font-size: 16px; line-height: 1.6; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  @media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
+  .step { display: flex; flex-direction: column; gap: 10px; }
+  .step-num { font-size: 15px; font-weight: 800; color: var(--in); }
+  .step h3 { font-size: 21px; font-weight: 800; }
+  .step p { color: var(--fg-muted); font-size: 15px; line-height: 1.6; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 16px; }
+  .feature {
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .ficon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: var(--in-soft); color: var(--in);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ficon svg { width: 20px; height: 20px; }
+  .feature h3 { font-size: 17px; font-weight: 800; }
+  .feature p { font-size: 14px; color: var(--fg-muted); line-height: 1.55; }
+
+  .csv {
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 22px; overflow-x: auto; font-size: 14px; line-height: 1.7; margin: 0;
+  }
+
+  .shots { display: flex; gap: 18px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; }
+  .shot { flex: 0 0 auto; width: 220px; scroll-snap-align: start; }
+  .shot .frame { border-radius: 20px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); aspect-ratio: 9 / 19.5; background: var(--bg-elev); }
+  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .shot span { display: block; margin-top: 10px; font-size: 13px; color: var(--fg-muted); text-align: center; }
+
+  .download {
+    background: var(--bg-elev); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px;
+  }
+  .download h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .download p { font-size: 15px; color: var(--fg-muted); line-height: 1.55; max-width: 56ch; }
+
+  footer { padding-block: 40px; border-top: 1px solid var(--border); margin-top: 24px; }
+  .foot-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .foot-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+  .foot-brand img { width: 28px; height: 28px; border-radius: 8px; }
+  .footlinks { display: flex; gap: 20px; font-size: 14px; color: var(--fg-muted); flex-wrap: wrap; }
+  .footlinks a:hover { color: var(--fg); }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<nav class="top" id="nav">
+  <div class="wrap navrow">
+    <a class="brand" href="#top"><img src="logo.svg" alt=""><span>ClockIn ClockOut</span></a>
+    <div class="navlinks">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#screenshots">Screenshots</a>
+    </div>
+    <div class="navcta">
+      <a class="btn btn-ghost" href="https://github.com/georges-ph/ClockIn-ClockOut" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-primary" href="#download">Download</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap" id="top">
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Open source · MIT licensed</span>
+      <h1>Clock <span class="in">in</span> and clock <span class="out">out</span> with a phone.</h1>
+      <p class="hero-sub">A badge system for small companies, without card readers or
+        gates. One phone at the entrance scans each employee's badge and records
+        when they arrive and leave.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="https://github.com/georges-ph/ClockIn-ClockOut/releases/latest/download/ClockIn-ClockOut.apk">Download for Android</a>
+        <a class="btn btn-ghost" href="#how">How it works</a>
+      </div>
+      <p class="hero-fine">Free · No account · Works offline</p>
+    </div>
+    <div class="hero-visual">
+      <div class="badge-card" aria-label="An employee badge with a QR code" role="img">
+        <div class="strip"><div class="slot"></div></div>
+        <div class="person">
+          <div class="avatar">LW</div>
+          <div><strong>Liam Warren</strong><span>IT · <code>36512666</code></span></div>
+        </div>
+        <div class="qr">
+          <svg viewBox="-2 -2 29 29" shape-rendering="crispEdges" aria-hidden="true"><path fill="#000" fill-rule="evenodd" d="M0 0h7v7h-7zM1 1h5v5h-5zM2 2h3v3h-3zM18 0h7v7h-7zM19 1h5v5h-5zM20 2h3v3h-3zM0 18h7v7h-7zM1 19h5v5h-5zM2 20h3v3h-3z"/><path fill="#000" d="M9 0h1v1h-1zM11 0h2v1h-2zM15 0h1v1h-1zM8 1h1v1h-1zM10 1h1v1h-1zM13 1h3v1h-3zM9 2h2v1h-2zM12 2h1v1h-1zM14 2h2v1h-2zM8 3h1v1h-1zM11 3h3v1h-3zM10 4h1v1h-1zM12 4h2v1h-2zM15 4h1v1h-1zM8 5h2v1h-2zM13 5h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM9 7h1v1h-1zM13 7h2v1h-2zM0 8h1v1h-1zM2 8h3v1h-3zM6 8h1v1h-1zM8 8h1v1h-1zM10 8h2v1h-2zM14 8h1v1h-1zM17 8h2v1h-2zM21 8h1v1h-1zM23 8h2v1h-2zM1 9h2v1h-2zM5 9h1v1h-1zM9 9h3v1h-3zM13 9h1v1h-1zM16 9h1v1h-1zM19 9h3v1h-3zM24 9h1v1h-1zM0 10h1v1h-1zM3 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM11 10h1v1h-1zM14 10h3v1h-3zM18 10h1v1h-1zM22 10h2v1h-2zM2 11h2v1h-2zM5 11h2v1h-2zM10 11h2v1h-2zM13 11h1v1h-1zM17 11h2v1h-2zM20 11h1v1h-1zM23 11h1v1h-1zM0 12h3v1h-3zM6 12h1v1h-1zM8 12h1v1h-1zM12 12h1v1h-1zM15 12h1v1h-1zM19 12h1v1h-1zM21 12h3v1h-3zM1 13h1v1h-1zM4 13h2v1h-2zM9 13h2v1h-2zM14 13h2v1h-2zM18 13h2v1h-2zM22 13h1v1h-1zM0 14h1v1h-1zM3 14h1v1h-1zM6 14h2v1h-2zM10 14h1v1h-1zM12 14h3v1h-3zM17 14h1v1h-1zM20 14h2v1h-2zM24 14h1v1h-1zM2 15h1v1h-1zM5 15h1v1h-1zM8 15h2v1h-2zM13 15h1v1h-1zM16 15h2v1h-2zM21 15h1v1h-1zM23 15h1v1h-1zM0 16h2v1h-2zM4 16h1v1h-1zM6 16h1v1h-1zM9 16h1v1h-1zM11 16h2v1h-2zM15 16h1v1h-1zM18 16h3v1h-3zM22 16h2v1h-2zM8 17h1v1h-1zM10 17h1v1h-1zM13 17h2v1h-2zM17 17h1v1h-1zM20 17h1v1h-1zM23 17h2v1h-2zM9 18h2v1h-2zM12 18h1v1h-1zM16 18h4v1h-4zM21 18h1v1h-1zM24 18h1v1h-1zM8 19h1v1h-1zM11 19h2v1h-2zM14 19h1v1h-1zM16 19h1v1h-1zM20 19h1v1h-1zM22 19h2v1h-2zM10 20h1v1h-1zM13 20h1v1h-1zM16 20h1v1h-1zM18 20h3v1h-3zM23 20h1v1h-1zM8 21h2v1h-2zM12 21h2v1h-2zM16 21h1v1h-1zM20 21h1v1h-1zM22 21h3v1h-3zM9 22h1v1h-1zM11 22h1v1h-1zM14 22h2v1h-2zM17 22h2v1h-2zM21 22h1v1h-1zM24 22h1v1h-1zM8 23h1v1h-1zM10 23h2v1h-2zM13 23h1v1h-1zM16 23h1v1h-1zM19 23h3v1h-3zM9 24h2v1h-2zM12 24h1v1h-1zM15 24h2v1h-2zM18 24h1v1h-1zM21 24h1v1h-1zM23 24h2v1h-2z"/></svg>
+        </div>
+        <div class="card-foot"><span>Today</span><span><span class="chip in">In 08:02</span> <span class="chip out">Out 17:31</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="section-head">
+      <span class="eyebrow">How it works</span>
+      <h2>One phone at the gate, one badge per person.</h2>
+      <p>The phone's role follows what it holds: the employee list makes it the
+        gate, a saved badge makes it an employee's phone.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3>Import the list</h3>
+        <p>On the gate phone, import a CSV with <code>id</code>, <code>name</code>
+          and <code>department</code> columns. Any spreadsheet saved as CSV works.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3>Hand out badges</h3>
+        <p>Each employee scans their badge once from the gate phone, and the app
+          opens on it from then on. Badges can also be shared and printed.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>Scan at the door</h3>
+        <p>The guard scans a badge, checks the name, and records it. The phone
+          picks in or out by itself.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="section-head">
+      <span class="eyebrow">Features</span>
+      <h2>Small, on purpose.</h2>
+      <p>The guard has one job: scan badges. HR gets the records as a spreadsheet.</p>
+    </div>
+    <div class="features">
+      <div class="feature">
+        <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg></div>
+        <h3>In or out, decided for you</h3>
+        <p>A clock-in from the last 16 hours means this scan is a clock-out. Night
+          shifts and forgotten clock-outs just work, and the guard can switch it.</p>
+      </div>
+      <div class="feature">
+        <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></div>
+        <h3>Only people on the list</h3>
+        <p>Re-import the list and anyone left out is refused at the gate. Their
+          past records keep their names.</p>
+      </div>
+      <div class="feature">
+        <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></div>
+        <h3>CSV export for HR</h3>
+        <p>Share or save the attendance as CSV, with the raw timestamp plus date
+          and time columns, ready for Excel.</p>
+      </div>
+      <div class="feature">
+        <div class="ficon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><path d="M12 20h.01"/><path d="M2 2l20 20"/></svg></div>
+        <h3>Works offline</h3>
+        <p>No server, no account and no internet. Everything stays on the gate
+          phone.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="eyebrow">The employee list</span>
+      <h2>A spreadsheet is enough.</h2>
+      <p>Column order and letter case don't matter, and files saved with
+        semicolons work too. Bad lines are skipped and listed by number.</p>
+    </div>
+    <pre class="csv"><code>id,name,department
+80811897,Victoria Bennett,Customer Support
+33660096,Grace Stevens,Engineering
+13495457,Isaac Jennings,IT</code></pre>
+  </section>
+
+  <section id="screenshots">
+    <div class="section-head">
+      <span class="eyebrow">Screenshots</span>
+      <h2>See it on a phone.</h2>
+    </div>
+    <div class="shots">
+      <div class="shot"><div class="frame"><img src="screenshots/badge.png" alt="An employee's badge" loading="lazy"></div><span>The employee's badge</span></div>
+      <div class="shot"><div class="frame"><img src="screenshots/gate.png" alt="The gate phone's home screen" loading="lazy"></div><span>The gate phone</span></div>
+      <div class="shot"><div class="frame"><img src="screenshots/record.png" alt="Recording a clock-in after a scan" loading="lazy"></div><span>After a scan</span></div>
+      <div class="shot"><div class="frame"><img src="screenshots/attendance.png" alt="The attendance list" loading="lazy"></div><span>Attendance</span></div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="download">
+      <div>
+        <h3>Get the Android app</h3>
+        <p>Install the APK on the gate phone and on any employee phone. Android 7
+          or newer. Updating from an earlier version keeps your records.</p>
+      </div>
+      <a class="btn btn-primary" href="https://github.com/georges-ph/ClockIn-ClockOut/releases/latest/download/ClockIn-ClockOut.apk">Download the APK</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="foot-brand"><img src="logo.svg" alt="">ClockIn ClockOut</div>
+    <div class="footlinks">
+      <a href="https://github.com/georges-ph/ClockIn-ClockOut" target="_blank" rel="noopener">Source</a>
+      <a href="https://github.com/georges-ph/ClockIn-ClockOut/releases" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/georges-ph/ClockIn-ClockOut/issues" target="_blank" rel="noopener">Report a bug</a>
+      <a href="https://github.com/georges-ph/ClockIn-ClockOut/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
+</body>
+</html>

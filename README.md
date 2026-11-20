@@ -1,46 +1,83 @@
 # ClockIn ClockOut
 
-A lightweight, budget-friendly Android application to **Clock In** when you arrive to work and **Clock Out** when you leave.
+[![CI](https://github.com/georges-ph/ClockIn-ClockOut/actions/workflows/ci.yml/badge.svg)](https://github.com/georges-ph/ClockIn-ClockOut/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/georges-ph/ClockIn-ClockOut)](https://github.com/georges-ph/ClockIn-ClockOut/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Designed for small companies — no hardware or internet required.
+A lightweight, budget-friendly Android app to **clock in** when you arrive at
+work and **clock out** when you leave.
+
+Designed for small companies: no card readers, no server and no internet.
+One phone at the entrance scans badges, and everyone else shows theirs.
+
+**Download:** [Android APK](https://github.com/georges-ph/ClockIn-ClockOut/releases/latest/download/ClockIn-ClockOut.apk)
+· **Website:** [georges-ph.github.io/ClockIn-ClockOut](https://georges-ph.github.io/ClockIn-ClockOut/)
+
+<p align="center">
+  <img src="docs/screenshots/badge.png" width="23%" alt="An employee's badge" />
+  <img src="docs/screenshots/gate.png" width="23%" alt="The gate phone's home screen" />
+  <img src="docs/screenshots/record.png" width="23%" alt="Recording a clock-in after a scan" />
+  <img src="docs/screenshots/attendance.png" width="23%" alt="The attendance list" />
+</p>
 
 ## How it started
 
-The idea came to me while watching a movie. In one scene, an employee was leaving work and had to scan his card at the company gate to clock out. It made me think: what about small companies? They usually don't have the budget to invest in such system. A dedicated hardware like card readers or access gates. So why not build a simple alternative but as a mobile app? A lightweight and affordable solution that handles employee clock-ins and clock-outs using nothing more than a phone.
+The idea came to me while watching a movie. In one scene, an employee was
+leaving work and had to scan his card at the company gate to clock out. It made
+me think: what about small companies? They usually don't have the budget for
+dedicated hardware like card readers or access gates. So why not build a simple
+alternative as a mobile app? A lightweight and affordable solution that handles
+employee clock-ins and clock-outs using nothing more than a phone.
 
-## Screenshots
+## How it works
 
-|Home|Profile|
-|:---:|:---:|
-|<img src="images/home.png" width="200">|<img src="images/profile.png" width="200">|
+1. **Set up the gate phone.** Import the employee list from **Profiles**, as a
+   CSV file with `id`, `name` and `department` columns:
 
-|Profiles|Attendance|
-|:---:|:---:|
-|<img src="images/profiles.png" width="200">|<img src="images/attendance.png" width="200">|
+   ```csv
+   id,name,department
+   80811897,Victoria Bennett,Customer Support
+   33660096,Grace Stevens,Engineering
+   ```
 
-## How to use
+2. **Give out badges.** Each employee scans their badge once from their
+   profile on the gate phone, and the app opens on it from then on. Badges can
+   also be shared as an image and printed.
+3. **Scan at the door.** The guard scans a badge and records it. The gate
+   phone picks in or out by itself, and anyone not on the list is refused.
+4. **Export for HR.** **Attendance** lists every record and exports them as
+   CSV. If the gate phone's clock is changed, the next record is marked with
+   how far it moved.
 
-The app can be split into two roles: employee and security guard. The security guard will take care of scanning employees QR codes at the entrance.
+## Building
 
-### Guard setup (scanner)
+Requirements: Android Studio, or JDK 21 and the Android SDK.
 
-A CSV file must first be imported from the `Profiles` screen located in the top menu. It should contain 3 columns: ID, Name and Department as such:
-```csv
-id,name,department
-80811897,Victoria Bennett,Customer Support
-33660096,Grace Stevens,Engineering
-13495457,Isaac Jennings,IT
-53210291,Lucas Parker,Legal
+```sh
+./gradlew assembleDebug
 ```
 
-### Employee first-time setup
+The APK is written to `app/build/outputs/apk/debug/`. To sign release builds
+with your own key, copy `key.properties.example` to `key.properties` and fill
+it in; without it, release builds use the debug key.
 
-When an employee arrives, they have to scan their relevant QR code from the guard's `Profiles` screen. This will save the profile information to the employee's device.
+Run the unit tests and lint with:
 
-### Daily clocking
+```sh
+./gradlew testDebugUnitTest lintDebug
+```
 
-The employee has just to tap the **In** or **Out** button which the guard has to scan.
+## Tech
 
-### Attendance
+Kotlin and Jetpack Compose, Room for storage, CameraX with ML Kit for
+on-device scanning, and ZXing to draw QR codes. Nothing leaves the phone.
 
-The employees attendance can be viewed by tapping the `Attendance` button in the top menu. It will show when each employee has clocked in or out. Data can be exported as CSV to create Excel reports and more.
+## Status
+
+Maintained as a small hobby project. Bug reports and ideas are welcome; see
+[CONTRIBUTING](CONTRIBUTING.md).
+
+## License
+
+[MIT](LICENSE). The bundled Manrope font is under the
+[SIL Open Font License](app/src/main/assets/licenses/Manrope-OFL.txt).
